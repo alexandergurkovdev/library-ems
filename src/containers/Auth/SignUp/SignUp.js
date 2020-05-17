@@ -10,6 +10,7 @@ import Button from '../../../components/UI/Forms/Button/Button';
 import Heading from '../../../components/UI/Headings/Heading';
 import Loader from '../../../components/UI/Loader/Loader';
 import * as actions from '../../../store/actions';
+import {validateEmail} from '../../../utils';
 
 const SignUpSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -20,9 +21,6 @@ const SignUpSchema = Yup.object().shape({
     .required('Поле фамилия обязательно')
     .min(3, 'Мин кол-во символов 3')
     .max(25, 'Макс кол-во символов 25'),
-  email: Yup.string()
-    .email('Не корректный e-mail')
-    .required('Поле e-mail обязательно'),
   password: Yup.string()
     .required('Поле пароль обязательно')
     .min(8, 'Минимальное кол-во символов 8'),
@@ -46,7 +44,7 @@ const SignUp = ({signUp, loading, error, cleanUp}) => {
         firstName: '',
         lastName: '',
         team: '',
-        email: '',
+        mail: '',
         password: '',
         confirmPassword: ''
       }}
@@ -59,10 +57,10 @@ const SignUp = ({signUp, loading, error, cleanUp}) => {
         }
       }}
     >
-      {({isSubmitting, isValid, handleChange, handleBlur, touched, errors}) => (
+      {({isSubmitting, isValid}) => (
         <Container>
           <Helmet>
-            <title>SignUp to wiki ems</title>
+            <title>SignUp to library ems</title>
           </Helmet>
           <FormWrapper>
             <TitlesWrapper>
@@ -84,8 +82,9 @@ const SignUp = ({signUp, loading, error, cleanUp}) => {
                 component={Input}
               />
               <Field
-                type='email'
-                name='email'
+                type='text'
+                name='mail'
+                validate={validateEmail}
                 placeholder='E-mail'
                 component={Input}
               />

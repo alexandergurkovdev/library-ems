@@ -6,6 +6,7 @@ const baseStyle = css `
   font-weight: ${({bold}) => (bold ? '700' : '400')};
   margin-top: 0;
   margin-bottom: ${({noMargin}) => (noMargin ? '0' : '2rem')};
+  white-space: ${({preWrap}) => (preWrap ? 'pre-wrap' : 'normal')};
 `;
 
 const Heading1 = styled.h1 `
@@ -28,10 +29,10 @@ const Heading4 = styled.h4 `
   ${baseStyle}
 `;
 
-const Heading = ({children, color, noMargin, size, bold, isDone}) => {
+const Heading = ({children, color, noMargin, size, bold, isDone, preWrap}) => {
   if (size === 'h1') {
     return (
-      <Heading1 isDone={isDone} noMargin={noMargin} color={color} bold={bold}>
+      <Heading1 preWrap={preWrap} isDone={isDone} noMargin={noMargin} color={color} bold={bold}>
         {children}
       </Heading1>
     );
@@ -39,7 +40,7 @@ const Heading = ({children, color, noMargin, size, bold, isDone}) => {
 
   if (size === 'h2') {
     return (
-      <Heading2 isDone={isDone} noMargin={noMargin} color={color} bold={bold}>
+      <Heading2 preWrap={preWrap} isDone={isDone} noMargin={noMargin} color={color} bold={bold}>
         {children}
       </Heading2>
     );
@@ -47,7 +48,7 @@ const Heading = ({children, color, noMargin, size, bold, isDone}) => {
 
   if (size === 'h3') {
     return (
-      <Heading3 isDone={isDone} noMargin={noMargin} color={color} bold={bold}>
+      <Heading3 preWrap={preWrap} isDone={isDone} noMargin={noMargin} color={color} bold={bold}>
         {children}
       </Heading3>
     );
@@ -55,7 +56,7 @@ const Heading = ({children, color, noMargin, size, bold, isDone}) => {
 
   if (size === 'h4') {
     return (
-      <Heading4 isDone={isDone} noMargin={noMargin} color={color} bold={bold}>
+      <Heading4 preWrap={preWrap} isDone={isDone} noMargin={noMargin} color={color} bold={bold}>
         {children}
       </Heading4>
     );

@@ -1,7 +1,9 @@
 import React, {Suspense, useEffect} from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
 
+import {compose} from 'redux';
 import {connect} from 'react-redux';
+import {firestoreConnect} from 'react-redux-firebase';
 import Layout from './hoc/layout/Layout';
 
 import Login from './containers/Auth/Login/Login';
@@ -13,10 +15,10 @@ import RecoverPassword from './containers/Auth/RecoverPassword/RecoverPassword';
 import Profile from './containers/Auth/Profile/Profile';
 import Loader from './components/UI/Loader/Loader';
 import Library from './containers/Library/Library';
+import BookPage from './containers/Library/Books/BookPage/BookPage';
 
-const App = ({loggedIn, emailVerified}) => {
+const App = ({loggedIn, emailVerified, doc, books, uid}) => {
   let routes;
-
   useEffect(() => {
     document.title = "Wiki ems";
   }, []);
@@ -34,9 +36,18 @@ const App = ({loggedIn, emailVerified}) => {
     routes = (
       <Suspense fallback={<Loader />}>
         <Switch>
-          <Route exact path='/' component={Library} />
+          <Route exact path='/'>
+            <Library userId={uid} />
+          </Route>
           <Route exact path='/profile'>
             <Profile loggedIn={loggedIn} />
+          </Route>
+          <Route exact path='/book/:name'>
+            <BookPage
+              books={books}
+              doc={doc}
+              uid={uid}
+            />
           </Route>
           <Route exact path='/logout' component={Logout} />
           <Redirect to='/' />
@@ -61,9 +72,17 @@ const App = ({loggedIn, emailVerified}) => {
   );
 };
 
-const mapStateToProps = ({firebase}) => ({
+const mapStateToProps = ({firestore, firebase}) => ({
+  doc: 'HcDMDWiNBUTVf5Urkid6',
+  books: firestore.data.books,
   loggedIn: firebase.auth.uid,
-  emailVerified: firebase.auth.emailVerified
+  emailVerified: firebase.auth.emailVerified,
+  uid: firebase.auth.uid
 });
 
-export default connect(mapStateToProps)(App);
+export default compose(
+  connect(mapStateToProps),
+  firestoreConnect(props => [
+    `books/${props.doc}`
+  ])
+)(App);

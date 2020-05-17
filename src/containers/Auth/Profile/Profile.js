@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {Formik, Field} from 'formik';
 import * as Yup from 'yup';
 import * as actions from '../../../store/actions';
-import {FormWrapper, StyledForm, Container, TitlesWrapper} from '../../../hoc/layout/elements';
+import {FormWrapper, StyledForm, Container, TitlesWrapper, ButtonsWrapper} from '../../../hoc/layout/elements';
 import Heading from '../../../components/UI/Headings/Heading';
 import Input from '../../../components/UI/Forms/Input/Input';
 import Button from '../../../components/UI/Forms/Button/Button';
@@ -23,26 +23,6 @@ const DeleteWrapper = styled.div`
   font-weight: 700;
 `;
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-around;
-  position: relative;
-  flex-wrap: wrap;
-
-  @media ${props => props.theme.mediaQueries.medium} {
-    flex-direction: column;
-  }
-
-  button{
-    &:first-child{
-      @media ${props => props.theme.mediaQueries.medium} {
-        margin-bottom: 1.5rem;
-      }
-    }
-  }
-`;
-
 const ProfileSchema = Yup.object().shape({
   firstName: Yup.string()
     .required('Поле имя обязательно')
@@ -55,7 +35,6 @@ const ProfileSchema = Yup.object().shape({
   email: Yup.string()
     .email('Не корректный e-mail')
     .required('Поле e-mail обязательно'),
-  avatar: Yup.string(),
   password: Yup.string()
     .min(8, 'Минимальное кол-во символов 8'),
   confirmPassword: Yup.string()
@@ -81,7 +60,6 @@ const Profile = ({firebase, editProfile, loading, error, cleanUp, loadingDelete,
       </Helmet>
       <Formik
         initialValues={{
-          avatar: firebase ? firebase.profile.avatar : '',
           firstName: firebase.profile.firstName,
           lastName: firebase.profile.lastName,
           email: firebase.auth.email,
@@ -106,12 +84,6 @@ const Profile = ({firebase, editProfile, loading, error, cleanUp, loadingDelete,
               Редактировать профиль
             </Heading>
             <StyledForm>
-              <Field
-                type='text'
-                name='avatar'
-                placeholder='Вставьте ссылку на аватар'
-                component={Input}
-              />
               <Field
                 type='text'
                 name='firstName'

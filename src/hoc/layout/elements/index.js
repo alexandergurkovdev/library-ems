@@ -8,6 +8,10 @@ export const Container = styled.div `
   margin: 0 auto;
   padding: 0 1.5rem;
   align-self: ${({selfStart}) => (selfStart ? 'flex-start' : 'center')};
+
+  @media ${props => props.theme.mediaQueries.medium} {
+    padding: 0;
+  }
 `;
 
 export const FormWrapper = styled.div `
@@ -71,4 +75,65 @@ export const Error = styled.div `
   position: absolute;
   bottom: 0;
   left: 0;
+`;
+
+export const StyledInput = styled.input `
+  padding: 1rem 1.5rem;
+  background-color: var(--color-whiteColor);
+  border: 1px solid var(--color-textColor);
+  color: var(--color-textColor);
+  font-weight: 500;
+  font-size: 1.4rem;
+  border-radius: .5rem;
+  width: 100%;
+
+  &:hover, &:focus{
+    border: 1px solid var(--color-yellow);
+  }
+
+  &::placeholder{
+    color: var(--color-gray);
+  }
+`;
+
+export const StyledTextarea = styled.textarea `
+  padding: 1rem 1.5rem;
+  background-color: var(--color-whiteColor);
+  border: 1px solid var(--color-textColor);
+  color: var(--color-textColor);
+  font-weight: 500;
+  font-size: 1.4rem;
+  border-radius: .5rem;
+  width: 100%;
+  resize: none;
+  min-height: 10rem;
+  white-space: pre-wrap;
+
+  &:hover, &:focus{
+    border: 1px solid var(--color-yellow);
+  }
+
+  &::placeholder{
+    color: var(--color-gray);
+  }
+`;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  position: relative;
+  flex-wrap: wrap;
+
+  @media ${props => props.theme.mediaQueries.medium} {
+    flex-direction: column;
+  }
+
+  button{
+    &:first-child{
+      @media ${props => props.theme.mediaQueries.medium} {
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
 `;

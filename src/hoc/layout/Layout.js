@@ -1,4 +1,5 @@
 import React from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 import {connect} from 'react-redux';
 
 import Navbar from "../../components/Navigation/Navbar/Navbar";
@@ -19,10 +20,10 @@ const MainWrapper = styled.main `
 `;
 
 const Layout = ({children, loggedIn, emailVerified}) => (
-  <React.Fragment>
+  <Scrollbars style={{ height: '100vh', width: '100vw' }}>
     <Navbar emailVerified={emailVerified} loggedIn={loggedIn} />
     <MainWrapper>{children}</MainWrapper>
-  </React.Fragment>
+  </Scrollbars>
 );
 
 const mapStateToProps = ({firebase}) => ({

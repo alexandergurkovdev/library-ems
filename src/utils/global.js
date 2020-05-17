@@ -6,7 +6,7 @@ export default createGlobalStyle `
   *::after {
     margin: 0;
     padding: 0;
-    box-sizing: inherit;
+    box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     outline: none;
@@ -14,11 +14,7 @@ export default createGlobalStyle `
 
   html {
     font-size: 62.5%;
-    box-sizing: border-box;
     --color-main: ${props => props.theme.colors.main};
-    --color-mainDark: ${props => props.theme.colors.mainDark};
-    --color-mainLight: ${props => props.theme.colors.mainLight};
-    --color-mainLighter: ${props => props.theme.colors.mainLighter};
     --color-textColor: ${props => props.theme.colors.textColor};
     --color-whiteColor: ${props => props.theme.colors.whiteColor};
     --color-errorRed: ${props => props.theme.colors.errorRed};

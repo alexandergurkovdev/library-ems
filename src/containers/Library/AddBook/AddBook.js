@@ -12,7 +12,6 @@ import Select from '../../../components/UI/Forms/Select/Select';
 import {booksFilter} from '../../../utils';
 import * as actions from '../../../store/actions';
 
-
 const addBookSchema = Yup.object().shape({
   bookAuthor: Yup.string()
     .required('Поле автор обязательно')

@@ -8,7 +8,7 @@ const SpinnewWrapper = styled.div `
   z-index: 10;
   width: ${({isBtn}) => (isBtn ? '23px' : '50px')};
   height: ${({isBtn}) => (isBtn ? '23px' : '50px')};
-  position: ${({isBtn}) => (isBtn ? 'absolute' : 'fixed')};
+  position: ${({isBtn, isAbsolute}) => (isBtn || isAbsolute ? 'absolute' : 'fixed')};
 `;
 
 const StyledSpinner = styled.svg`
@@ -44,8 +44,8 @@ const StyledSpinner = styled.svg`
   }
 `;
 
-const Loader = ({isBtn}) => (
-  <SpinnewWrapper isBtn={isBtn}>
+const Loader = ({isBtn, isAbsolute}) => (
+  <SpinnewWrapper isBtn={isBtn} isAbsolute={isAbsolute}>
     <StyledSpinner isBtn={isBtn} viewBox={isBtn ? '0 0 26 26' : '0 0 50 50'}>
       <circle
         className="path"

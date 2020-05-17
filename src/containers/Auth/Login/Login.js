@@ -49,7 +49,7 @@ const Login = ({login, loading, error, cleanUp}) => {
       {({isSubmiting, isValid}) => (
         <Container>
           <Helmet>
-            <title>Login to wiki ems</title>
+            <title>Login to library ems</title>
           </Helmet>
           <FormWrapper>
             <TitlesWrapper>

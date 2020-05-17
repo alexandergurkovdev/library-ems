@@ -8,7 +8,7 @@ export const signUp = data => async (dispatch, getState, {getFirebase, getFirest
   try {
     const res = await firebase
       .auth()
-      .createUserWithEmailAndPassword(data.email, data.password);
+      .createUserWithEmailAndPassword(data.mail, data.password);
 
       // Send the verification email
     const user = firebase.auth().currentUser;
@@ -21,7 +21,7 @@ export const signUp = data => async (dispatch, getState, {getFirebase, getFirest
         firstName: data.firstName,
         lastName: data.lastName,
         team: data.team,
-        email: data.email
+        email: data.mail
       });
       dispatch({type: actions.AUTH_SUCCESS});
   } catch(err) {
@@ -98,7 +98,6 @@ export const editProfile = (data) => async (dispatch, getState, {getFirebase, ge
     }
 
     await firestore.collection('users').doc(userId).set({
-      avatar: data.avatar,
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
