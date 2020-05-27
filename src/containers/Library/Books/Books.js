@@ -1,14 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { withAlert } from 'react-alert';
-import {compose} from 'redux';
-import {connect} from 'react-redux';
-import {firestoreConnect} from 'react-redux-firebase';
 import { Scrollbars } from 'react-custom-scrollbars';
 import BookItem from './BookItem/BookItem';
 import BooksFilter from './BooksFilter/BooksFilter';
 import {booksFilter} from '../../../utils';
 import styled from 'styled-components';
 import Loader from '../../../components/UI/Loader/Loader';
+import Heading from '../../../components/UI/Headings/Heading';
 
 const Row = styled.div `
   display: flex;
@@ -59,7 +57,7 @@ class Books extends Component {
   }
 
   render() {
-    const {books, doc, userId, alert} = this.props;
+    const {books, doc, userId, alert, isAdmin} = this.props;
     const {search, filter} = this.state;
 
     let content;
@@ -74,15 +72,21 @@ class Books extends Component {
       );
       alert.error('Не удалось загрузить список книг, пожалуйста перезагрузите страницу.');
     } else {
+      const bookItems = this.onSearchItem(this.filterItems(books[doc].books, filter), search);
       content = (
         <Fragment>
           {
             books === null ? null :
-            this.onSearchItem(this.filterItems(books[doc].books, filter), search).map((item) => {
+            bookItems.length > 0 ?
+            bookItems.map((item) => {
               return(
-                <BookItem userId={userId} key={item.id} book={item} />
+                <BookItem userId={userId} key={item.id} book={item} isAdmin={isAdmin} />
               );
-            })
+            }) : <div style={{padding: '1.5rem'}}>
+              <Heading size='h4' noMargin>
+                В этом разделе еще нет книг...
+              </Heading>
+            </div>
           }
         </Fragment>
       )
@@ -105,14 +109,4 @@ class Books extends Component {
   }
 }
 
-const mapStateToProps = ({firestore}) => ({
-  doc: 'HcDMDWiNBUTVf5Urkid6',
-  books: firestore.data.books,
-});
-
-export default withAlert()(compose(
-  connect(mapStateToProps),
-  firestoreConnect(props => [
-    `books/${props.doc}`
-  ])
-)(Books));
+export default withAlert()(Books);

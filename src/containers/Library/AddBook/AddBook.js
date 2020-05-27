@@ -113,8 +113,8 @@ const AddBook = ({addBook, loading, error, cleanUp}) => {
 };
 
 const mapStateToProps = ({books}) => ({
-  loading: books.stateloading,
-  error: books.stateerror
+  loading: books.loading,
+  error: books.error
 });
 
 const mapDispatchToProps = {

@@ -10,7 +10,7 @@ export const LibraryWrapper = styled.div `
 `;
 
 export const BooksWrapper = styled.div `
-  width: 60%;
+  width: ${({isAdmin}) => (isAdmin ? '60%' : '100%')};
   position: relative;
 
   @media ${props => props.theme.mediaQueries.large} {

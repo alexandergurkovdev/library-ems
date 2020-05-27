@@ -25,6 +25,7 @@ export const Item = styled.div `
   flex-direction: column;
   transition: .3s all;
   position: relative;
+  text-align: left;
   &:hover{
     transform: translateY(-.3rem);
   }
@@ -48,4 +49,10 @@ export const BtnWrap = styled.div `
 export const BookItemReviews = styled(Link) `
   display: block;
   font-size: 1.4rem;
+`;
+
+export const BookItemInfo = styled.div `
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;

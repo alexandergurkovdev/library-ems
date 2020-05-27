@@ -6,24 +6,26 @@ import Books from './Books/Books';
 import Heading from '../../components/UI/Headings/Heading';
 import {LibraryWrapper, BooksWrapper, TitleWrapper, AddBookWrapper} from './styles';
 
-const Library = ({userId}) => {
+const Library = ({userId, books, doc, isAdmin}) => {
   return (
     <Container selfStart>
       <Helmet>
         <title>Библиотека ems</title>
       </Helmet>
       <LibraryWrapper>
-        <BooksWrapper>
+        <BooksWrapper isAdmin={isAdmin}>
           <TitleWrapper>
             <Heading noMargin size='h2' bold>
               Список книг
             </Heading>
           </TitleWrapper>
-          <Books userId={userId} />
+          <Books books={books} doc={doc} userId={userId} isAdmin={isAdmin} />
         </BooksWrapper>
-        <AddBookWrapper>
-          <AddBook />
-        </AddBookWrapper>
+        {
+          isAdmin ? <AddBookWrapper>
+            <AddBook />
+          </AddBookWrapper> : null
+        }
       </LibraryWrapper>
     </Container>
   )

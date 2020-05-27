@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, Fragment} from 'react';
+import {Link} from 'react-router-dom';
 import {Helmet} from 'react-helmet';
 import { useAlert } from 'react-alert';
 import {connect} from 'react-redux';
@@ -23,6 +24,62 @@ const DeleteWrapper = styled.div`
   font-weight: 700;
 `;
 
+const ProfileWrapper = styled.div `
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 0 1.5rem;
+  @media ${props => props.theme.mediaQueries.medium} {
+    flex-direction: column;
+  }
+`;
+
+const BookRentWrapper = styled.div `
+  width: 60%;
+  @media ${props => props.theme.mediaQueries.medium} {
+    width: 100%;
+    margin-bottom: 2.5rem;
+  }
+`;
+
+const ProfileEditWrapper = styled.div `
+  width: 35%;
+
+  @media ${props => props.theme.mediaQueries.medium} {
+    width: 100%;
+  }
+
+  div {
+    @media ${props => props.theme.mediaQueries.medium} {
+      width: 100%;
+      max-width: 100%;
+      text-align: center;
+    }
+  }
+`;
+
+const BookItems = styled.div `
+  position: relative;
+  min-height: 5rem;
+  width: 100%;
+  font-size: 1.6rem;
+`;
+
+const BookItem = styled(Link) `
+  font-weight: 700;
+  margin-right: 2rem;
+  display: block;
+`;
+
+const BookItemWrapper = styled.div `
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--color-gray);
+`;
+
 const ProfileSchema = Yup.object().shape({
   firstName: Yup.string()
     .required('Поле имя обязательно')
@@ -41,7 +98,7 @@ const ProfileSchema = Yup.object().shape({
     .oneOf([Yup.ref('password'), null], `Пароли не совпадают`)
 });
 
-const Profile = ({firebase, editProfile, loading, error, cleanUp, loadingDelete, erroreDelete, deleteUser}) => {
+const Profile = ({firebase, editProfile, loading, error, cleanUp, loadingDelete, erroreDelete, deleteUser, userId, books, doc, returnBook}) => {
   useEffect(() => {
     return () => {
       cleanUp();
@@ -52,80 +109,121 @@ const Profile = ({firebase, editProfile, loading, error, cleanUp, loadingDelete,
 
   const [modalOpened, setModalOpened] = useState(false);
 
+  let rentBooks;
+
+  if (books && userId) {
+    const findBooks = books[doc].books.filter(book => (book.renter.filter(renter => renter.userId === userId).length > 0));
+    rentBooks = (
+      findBooks
+    );
+  }
+
   if (!firebase.profile.isLoaded) return null;
   return (
     <Container>
       <Helmet>
         <title>Profile edit</title>
       </Helmet>
-      <Formik
-        initialValues={{
-          firstName: firebase.profile.firstName,
-          lastName: firebase.profile.lastName,
-          email: firebase.auth.email,
-          password: '',
-          confirmPassword: '',
-        }}
-        validationSchema={ProfileSchema}
-        onSubmit={async (values, {setSubmitting}) => {
-          await editProfile(values);
-          setSubmitting(false);
-        
-          if (error) {
-            alert.error(`${error}`)
-          } else {
-            alert.success('Профиль успешно обновлен!')
-          }
-        }}
-      >
-        {({isSubmitting, isValid}) => (
-          <FormWrapper>
-            <Heading size="h2" bold>
-              Редактировать профиль
-            </Heading>
-            <StyledForm>
-              <Field
-                type='text'
-                name='firstName'
-                placeholder='Имя'
-                component={Input}
-              />
-              <Field
-                type='text'
-                name='lastName'
-                placeholder='Фамилия'
-                component={Input}
-              />
-              <Field
-                type='email'
-                name='email'
-                placeholder='E-mail'
-                component={Input}
-              />
-              <Field
-                type='password'
-                name='password'
-                placeholder='Пароль'
-                component={Input}
-              />
-              <Field
-                type='password'
-                name='confirmPassword'
-                placeholder='Подтвердите пароль'
-                component={Input}
-              />
-              <Button
-                disabled={!isValid || isSubmitting}
-                type="submit"
-                loading={loading ? <Loader isBtn /> : null}
-              >
-                Редактировать
-              </Button>
-            </StyledForm>
-            <DeleteWrapper onClick={() => setModalOpened(true)}>Удалить аккаунт</DeleteWrapper>
-          </FormWrapper>
-        )}
-      </Formik>
+      <ProfileWrapper>
+        <BookRentWrapper>
+          <Heading size="h2" bold>
+            Книги на руках
+          </Heading>
+          <BookItems>
+            {
+              books ?
+              rentBooks.length > 0 ?
+              rentBooks.map((book) => {
+                return (
+                  <BookItemWrapper key={book.id}>
+                    <BookItem to={`/book/${book.id}`}>
+                      {book.bookName}
+                    </BookItem>
+                    <Button
+                      deleted
+                      contain
+                      onClick={async () => await returnBook(book.id)}
+                    >
+                      Вернуть книгу
+                    </Button>
+                  </BookItemWrapper>
+                )
+              }) : <Fragment>У вас нет ни одной книги...</Fragment> : 
+              <Loader isAbsolute />
+            }
+          </BookItems>
+        </BookRentWrapper>
+        <ProfileEditWrapper>
+          <Formik
+            initialValues={{
+              firstName: firebase.profile.firstName,
+              lastName: firebase.profile.lastName,
+              email: firebase.auth.email,
+              password: '',
+              confirmPassword: '',
+            }}
+            validationSchema={ProfileSchema}
+            onSubmit={async (values, {setSubmitting}) => {
+              await editProfile(values);
+              setSubmitting(false);
+            
+              if (error) {
+                alert.error(`${error}`)
+              } else {
+                alert.success('Профиль успешно обновлен!')
+              }
+            }}
+          >
+            {({isSubmitting, isValid}) => (
+              <FormWrapper>
+                <Heading size="h2" bold>
+                  Редактировать профиль
+                </Heading>
+                <StyledForm>
+                  <Field
+                    type='text'
+                    name='firstName'
+                    placeholder='Имя'
+                    component={Input}
+                  />
+                  <Field
+                    type='text'
+                    name='lastName'
+                    placeholder='Фамилия'
+                    component={Input}
+                  />
+                  <Field
+                    type='email'
+                    name='email'
+                    placeholder='E-mail'
+                    component={Input}
+                  />
+                  <Field
+                    type='password'
+                    name='password'
+                    placeholder='Пароль'
+                    component={Input}
+                  />
+                  <Field
+                    type='password'
+                    name='confirmPassword'
+                    placeholder='Подтвердите пароль'
+                    component={Input}
+                  />
+                  <Button
+                    disabled={!isValid || isSubmitting}
+                    type="submit"
+                    loading={loading ? <Loader isBtn /> : null}
+                  >
+                    Редактировать
+                  </Button>
+                </StyledForm>
+                <DeleteWrapper onClick={() => setModalOpened(true)}>Удалить аккаунт</DeleteWrapper>
+              </FormWrapper>
+            )}
+          </Formik>
+        </ProfileEditWrapper>
+      </ProfileWrapper>
       <Modal
         opened={modalOpened}
         close={() => setModalOpened(false)}
@@ -139,19 +237,22 @@ const Profile = ({firebase, editProfile, loading, error, cleanUp, loadingDelete,
           <Button
             disabled={loadingDelete}
             loading={loading ? <Loader isBtn /> : null}
-            onClick={() => deleteUser()}
+            onClick={
+              () => {
+                deleteUser();
+                if (erroreDelete) {
+                  alert.error(`${erroreDelete}`);
+                }
+                setModalOpened(false);
+              }
+            }
             deleted
             contain
           >
             Удалить
           </Button>
           <Button
-            onClick={() => {
-              setModalOpened(false);
-              if (erroreDelete) {
-                alert.error(`${erroreDelete}`)
-              }
-            }}
+            onClick={() => setModalOpened(false)}
             contain
           >
             Отмена
@@ -162,18 +263,22 @@ const Profile = ({firebase, editProfile, loading, error, cleanUp, loadingDelete,
   );
 };
 
-const mapStateToProps = ({firebase, auth}) => ({
+const mapStateToProps = ({firebase, firestore, auth}) => ({
   firebase,
+  doc: 'HcDMDWiNBUTVf5Urkid6',
+  books: firestore.data.books,
+  userId: firebase.auth.uid,
   loading: auth.profileEdit.loading,
   error: auth.profileEdit.error,
   loadingDelete: auth.deleteUser.loading,
-  erroreDelete: auth.deleteUser.error
+  erroreDelete: auth.deleteUser.error,
 });
 
 const mapDispatchToProps = {
   editProfile: actions.editProfile,
   cleanUp: actions.clean,
-  deleteUser: actions.deleteUser
+  deleteUser: actions.deleteUser,
+  returnBook: actions.returnBook,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

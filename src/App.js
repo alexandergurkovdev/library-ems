@@ -1,14 +1,11 @@
 import React, {Suspense, useEffect} from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
-
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import {firestoreConnect} from 'react-redux-firebase';
 import Layout from './hoc/layout/Layout';
-
 import Login from './containers/Auth/Login/Login';
 import SignUp from './containers/Auth/SignUp/SignUp';
-
 import Logout from './containers/Auth/Logout/Logout';
 import VerifyEmail from './containers/Auth/VerifyEmail/VerifyEmail';
 import RecoverPassword from './containers/Auth/RecoverPassword/RecoverPassword';
@@ -17,8 +14,9 @@ import Loader from './components/UI/Loader/Loader';
 import Library from './containers/Library/Library';
 import BookPage from './containers/Library/Books/BookPage/BookPage';
 
-const App = ({loggedIn, emailVerified, doc, books, uid}) => {
+const App = ({loggedIn, emailVerified, doc, books, isAdmin}) => {
   let routes;
+  
   useEffect(() => {
     document.title = "Wiki ems";
   }, []);
@@ -37,16 +35,21 @@ const App = ({loggedIn, emailVerified, doc, books, uid}) => {
       <Suspense fallback={<Loader />}>
         <Switch>
           <Route exact path='/'>
-            <Library userId={uid} />
+            <Library
+              userId={loggedIn}
+              books={books}
+              doc={doc}
+              isAdmin={isAdmin}
+            />
           </Route>
           <Route exact path='/profile'>
             <Profile loggedIn={loggedIn} />
           </Route>
-          <Route exact path='/book/:name'>
+          <Route exact path='/book/:id'>
             <BookPage
               books={books}
               doc={doc}
-              uid={uid}
+              uid={loggedIn}
             />
           </Route>
           <Route exact path='/logout' component={Logout} />
@@ -66,7 +69,7 @@ const App = ({loggedIn, emailVerified, doc, books, uid}) => {
   }
 
   return (
-    <Layout>
+    <Layout loggedIn={loggedIn} emailVerified={emailVerified}>
       {routes}
     </Layout>
   );
@@ -77,7 +80,7 @@ const mapStateToProps = ({firestore, firebase}) => ({
   books: firestore.data.books,
   loggedIn: firebase.auth.uid,
   emailVerified: firebase.auth.emailVerified,
-  uid: firebase.auth.uid
+  isAdmin: firebase.profile.admin
 });
 
 export default compose(

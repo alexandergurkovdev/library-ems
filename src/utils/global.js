@@ -20,6 +20,7 @@ export default createGlobalStyle `
     --color-errorRed: ${props => props.theme.colors.errorRed};
     --color-green: ${props => props.theme.colors.green};
     --color-yellow: ${props => props.theme.colors.yellow};
+    --color-yellowDark: ${props => props.theme.colors.yellowDark};
     --color-gray: ${props => props.theme.colors.gray};
     --shadow: ${props => props.theme.colors.shadow};
 

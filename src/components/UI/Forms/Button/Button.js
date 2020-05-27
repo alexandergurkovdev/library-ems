@@ -10,9 +10,9 @@ const StyledButton = styled.button `
   font-size: 1.4rem;
   color: var(--color-whiteColor);
   font-weight: 700;
-  background-color: ${({deleted}) => (deleted ? 'var(--color-errorRed)' : 'var(--color-main)')};
+  background-color: ${({deleted, warning}) => (deleted ? 'var(--color-errorRed)' : warning ? 'var(--color-yellow)' : 'var(--color-main)')};
   &:hover, &:active {
-  background-color: ${({deleted}) => (deleted ? 'var(--color-errorRed)' : 'var(--color-yellow)')};
+    background-color: ${({deleted, warning}) => (deleted ? 'var(--color-errorRed)' : warning ? 'var(--color-yellowDark)' : 'var(--color-yellow)')};
   }
   &:disabled {
     cursor: not-allowed;
@@ -21,9 +21,9 @@ const StyledButton = styled.button `
   }
 `;
 
-const Button = ({children, disabled, loading, deleted, contain, ...rest}) => {
+const Button = ({children, disabled, warning, loading, deleted, contain, ...rest}) => {
   return (
-    <StyledButton contain={contain} deleted={deleted} disabled={disabled} {...rest}>
+    <StyledButton contain={contain} warning={warning} deleted={deleted} disabled={disabled} {...rest}>
       {loading ? loading : children}
     </StyledButton>
   )

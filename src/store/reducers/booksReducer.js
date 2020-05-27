@@ -1,14 +1,17 @@
 import * as actions from '../actions/actionTypes';
 
 const initialState = {
-  stateerror: null,
-  stateloading: false,
+  error: null,
+  loading: false,
   addReview: {
     error: null,
     loading: false
   },
   deleteReview: {
     error: null,
+    loading: false
+  },
+  deleteBook: {
     loading: false
   }
 };
@@ -17,26 +20,46 @@ const initialState = {
 const addBookStart = state => {
   return {
     ...state,
-    stateerror: null,
-    stateloading: true
+    error: null,
+    loading: true
   };
 };
 const addBookSuccess = state => {
   return {
     ...state,
-    stateloading: false,
-    stateerror: false
+    loading: false,
+    error: false
   };
 };
 const addBookFail = (state, payload) => {
   return {
     ...state,
-    stateloading: false,
-    stateerror: payload
+    loading: false,
+    error: payload
   };
 };
 
-// Add Book
+// Delete book
+const deleteBookStart = state => {
+  return{
+    ...state,
+    deleteBook: {
+      ...state.deleteBook,
+      loading: true
+    }
+  };
+};
+const deleteBookSuccess= state => {
+  return{
+    ...state,
+    deleteBook: {
+      ...state.deleteBook,
+      loading: false
+    }
+  };
+};
+
+// Add Book review
 const addBookReviewStart = state => {
   return {
     ...state,
@@ -67,14 +90,14 @@ const addBookReviewFail = (state, payload) => {
   };
 };
 
-// Delete ToDo
+// Delete review
 const deleteReviewStart = state => {
   return{
     ...state,
     deleteReview: {
       ...state.deleteReview,
       loading: true
-    }
+    },
   };
 };
 const deleteReviewSuccess= state => {
@@ -110,6 +133,11 @@ const cleanUp = state => {
       ...state.deleteReview,
       error: null,
       loading: false,
+    },
+    deleteBook: {
+      ...state.deleteBook,
+      error: null,
+      loading: false
     }
   };
 };
@@ -127,6 +155,12 @@ export default (state = initialState, { type, payload }) => {
 
     case actions.ADD_BOOK_FAIL:
       return addBookFail(state, payload);
+
+    case actions.DELETE_BOOK_START:
+      return deleteBookStart(state);
+
+    case actions.DELETE_BOOK_SUCCESS:
+      return deleteBookSuccess(state);
 
     case actions.ADD_BOOK_REVIEW_START:
       return addBookReviewStart(state);

@@ -97,5 +97,3 @@ export const bookRating = [
     label: '5'
   },
 ];
-
-export const getRatingPercents = (value) => Math.floor(value) * 100 / 5;

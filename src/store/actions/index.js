@@ -11,8 +11,11 @@ export {
 
 export {
   addBook,
+  deleteBook,
   rentBook,
-  returntBook,
+  returnBook,
   addBookReview,
-  deleteBookReview
+  deleteBookReview,
+  likeBook,
+  deleteLike
 } from './booksActions';

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
-import {connect} from 'react-redux';
 
 import Navbar from "../../components/Navigation/Navbar/Navbar";
 
@@ -26,8 +25,4 @@ const Layout = ({children, loggedIn, emailVerified}) => (
   </Scrollbars>
 );
 
-const mapStateToProps = ({firebase}) => ({
-  loggedIn: firebase.auth
-});
-
-export default connect(mapStateToProps)(Layout);
+export default Layout;

@@ -14,6 +14,9 @@ const StyledNavLink = styled(NavLink) `
   padding: 0 1rem;
   color: var(--color-textColor);
   transition: all 0.2s;
+  @media ${props => props.theme.mediaQueries.small} {
+    font-size: 2rem;
+  }
   &:hover, &.active {
     color: var(--color-yellow);
   }

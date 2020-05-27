@@ -43,6 +43,21 @@ export const addBook = data => async(dispatch, getState, {getFirestore}) => {
   }
 };
 
+// Delete book
+export const deleteBook = (bookId) => async(dispatch, getState, {getFirestore}) => {
+  const firestore = getFirestore();
+  dispatch({type: actions.DELETE_BOOK_START});
+  const res = await firestore.collection('books').doc('HcDMDWiNBUTVf5Urkid6').get();
+  const previousBooks = res.data().books;
+  const newBooks = previousBooks.filter(book => book.id !== bookId);
+
+  await firestore.collection('books').doc('HcDMDWiNBUTVf5Urkid6').update({
+    books: newBooks
+  });
+
+  dispatch({type: actions.DELETE_BOOK_SUCCESS});
+};
+
 // Rent book
 export const rentBook = (bookId) => async(dispatch, getState, {getFirestore}) => {
   const firestore = getFirestore();
@@ -69,7 +84,7 @@ export const rentBook = (bookId) => async(dispatch, getState, {getFirestore}) =>
 };
 
 // Return book
-export const returntBook = (bookId) => async(dispatch, getState, {getFirestore}) => {
+export const returnBook = (bookId) => async(dispatch, getState, {getFirestore}) => {
   const firestore = getFirestore();
   const userId = getState().firebase.auth.uid;
   const res = await firestore.collection('books').doc('HcDMDWiNBUTVf5Urkid6').get();
@@ -90,7 +105,7 @@ export const returntBook = (bookId) => async(dispatch, getState, {getFirestore})
 };
 
 // Add book review
-export const addBookReview = (data, rating) => async(dispatch, getState, {getFirestore}) => {
+export const addBookReview = (data) => async(dispatch, getState, {getFirestore}) => {
   const firestore = getFirestore();
   const userId = getState().firebase.auth.uid;
   const firstName = getState().firebase.profile.firstName;
@@ -99,7 +114,7 @@ export const addBookReview = (data, rating) => async(dispatch, getState, {getFir
   try {
     const res = await firestore.collection('books').doc('HcDMDWiNBUTVf5Urkid6').get();
     const books = res.data().books;
-    const index = books.findIndex(book => book.bookName === data.bookName);
+    const index = books.findIndex(book => book.id === +data.bookId);
     const newReview = {
       id: new Date().valueOf(),
       userId,
@@ -133,14 +148,14 @@ export const addBookReview = (data, rating) => async(dispatch, getState, {getFir
 };
 
 // Delete book review
-export const deleteBookReview = (name) => async (dispatch, getState, {getFirestore}) => {
+export const deleteBookReview = (id) => async (dispatch, getState, {getFirestore}) => {
   const firestore = getFirestore();
   const userId = getState().firebase.auth.uid;
   dispatch({type: actions.DELETE_BOOK_REVIEW_START});
   try {
     const res = await firestore.collection('books').doc('HcDMDWiNBUTVf5Urkid6').get();
     const books = res.data().books;
-    const index = books.findIndex(book => book.bookName === name);
+    const index = books.findIndex(book => book.id === +id);
     const reviews = books[index].reviews;
     const reviewIndex = reviews.findIndex(review => review.userId === userId);
     
@@ -157,4 +172,57 @@ export const deleteBookReview = (name) => async (dispatch, getState, {getFiresto
   } catch (err) {
     dispatch({type: actions.DELETE_BOOK_REVIEW_FAIL, payload: err.message});
   }
+};
+
+// Like book
+export const likeBook = (data) => async(dispatch, getState, {getFirestore}) => {
+  const firestore = getFirestore();
+  const userId = getState().firebase.auth.uid;
+  const firstName = getState().firebase.profile.firstName;
+  const lastName = getState().firebase.profile.lastName;
+  const res = await firestore.collection('books').doc('HcDMDWiNBUTVf5Urkid6').get();
+  const books = res.data().books;
+  const index = books.findIndex(book => book.id === +data);
+  const newLike = {
+    userId,
+    firstName,
+    lastName
+  };
+  if (books[index].likes) {
+    books[index].likes = [
+      ...books[index].likes,
+      newLike
+    ];
+  } else {
+    books[index] = {
+      ...books[index],
+      likes: [
+        newLike
+      ]
+    };
+  }
+
+  await firestore.collection('books').doc('HcDMDWiNBUTVf5Urkid6').update({
+    books
+  });
+};
+
+// Delete like
+export const deleteLike = (data) => async (dispatch, getState, {getFirestore}) => {
+  const firestore = getFirestore();
+  const userId = getState().firebase.auth.uid;
+  const res = await firestore.collection('books').doc('HcDMDWiNBUTVf5Urkid6').get();
+  const books = res.data().books;
+  const index = books.findIndex(book => book.id === +data);
+  const likes = books[index].likes;
+  const likeIndex = likes.findIndex(like => like.userId === userId);
+  
+  books[index].likes = [
+    ...likes.slice(0, likeIndex),
+    ...likes.slice(likeIndex + 1)
+  ];
+
+  await firestore.collection('books').doc('HcDMDWiNBUTVf5Urkid6').update({
+    books: books
+  });
 };

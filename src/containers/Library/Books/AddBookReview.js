@@ -20,8 +20,7 @@ const bookReviewSchema = Yup.object().shape({
     .required('Оцените книгу')
 });
 
-const AddBookReview = ({bookName, addBookReview, loading, error, cleanUp}) => {
-
+const AddBookReview = ({bookId, addBookReview, loading, error, cleanUp}) => {
   useEffect(() => {
     return () => {
       cleanUp();
@@ -29,12 +28,13 @@ const AddBookReview = ({bookName, addBookReview, loading, error, cleanUp}) => {
   }, [cleanUp]);
 
   const alert = useAlert();
+  
   return (
     <Formik
       initialValues={{
         review: '',
         rating: '',
-        bookName: bookName
+        bookId: bookId
       }}
       validationSchema={bookReviewSchema}
       onSubmit={async (values, {setSubmitting, resetForm}) => {

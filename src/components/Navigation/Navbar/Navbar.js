@@ -23,13 +23,13 @@ const Wrapper = styled.div `
   height: 100%;
 `;
 
-export const Navbar = ({loggedIn}) => {
+export const Navbar = ({loggedIn, emailVerified}) => {
   return (
     <FixedWrapper>
       <Container>
         <Wrapper>
         <Logo />
-          <NavItems loggedIn={loggedIn} />
+          <NavItems loggedIn={loggedIn} emailVerified={emailVerified} />
         </Wrapper>
       </Container>
     </FixedWrapper>

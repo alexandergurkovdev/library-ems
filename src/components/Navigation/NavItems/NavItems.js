@@ -14,20 +14,37 @@ const Ul = styled.ul`
   height: 100%;
 `;
 
-const NavItems = ({loggedIn}) => {
+const Label = styled.span `
+  padding-left: .5rem;
+
+  @media ${props => props.theme.mediaQueries.small} {
+    display: none;
+  }
+`;
+
+const NavItems = ({loggedIn, emailVerified}) => {
   let links;
 
-  if (loggedIn.uid) {
+  if (loggedIn && emailVerified) {
     links = (
       <Ul>
         <NavItem link='/'>
-          Библиотека
+          <i className="fas fa-book"></i>
+          <Label>
+            Библиотека
+          </Label>
         </NavItem>
         <NavItem link='/profile'>
-          Профиль
+          <i className="far fa-user"></i>
+          <Label>
+            Профиль
+          </Label>
         </NavItem>
         <NavItem link='/logout'>
-          Выйти
+          <i className="fas fa-sign-out-alt"></i>
+          <Label>
+            Выйти
+          </Label>
         </NavItem>
       </Ul>
     );
@@ -35,10 +52,16 @@ const NavItems = ({loggedIn}) => {
     links = (
       <Ul>
         <NavItem link='/login'>
-          Вход
+         <i className="fas fa-sign-in-alt"></i>
+          <Label>
+            Вход
+          </Label>
         </NavItem>
         <NavItem link='/signup'>
-          Регистрация
+          <i className="fas fa-user-plus"></i>
+          <Label>
+            Регистрация
+          </Label>
         </NavItem>
       </Ul>
     );
